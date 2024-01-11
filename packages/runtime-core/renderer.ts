@@ -154,11 +154,11 @@ export function createRenderer(options: RendererOptions) {
     container: RendererElement
   ) => {
     const componentUpdateFn = () => {
-      const { render } = instance;
+      const { render, setupState } = instance;
 
       if (!instance.isMounted) {
         // mount process
-        const subTree = (instance.subTree = normalizeVNode(render()));
+        const subTree = (instance.subTree = normalizeVNode(render(setupState)));
         patch(null, subTree, container);
         initialVNode.el = subTree.el;
         instance.isMounted = true;
@@ -177,7 +177,7 @@ export function createRenderer(options: RendererOptions) {
         }
 
         const prevTree = instance.subTree;
-        const nextTree = normalizeVNode(render());
+        const nextTree = normalizeVNode(render(setupState));
         instance.subTree = nextTree;
 
         patch(prevTree, nextTree, hostParentNode(prevTree.el!)!);
